@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ---- Color ------------------------------------------------------ */
+  --color-ink: #0a0a0b;
+  --color-ink-2: #121215;
+  --color-ink-3: #1c1c21;
+  --color-paper: #f4f1ea;
+  --color-paper-2: #e6e1d6;
+  --color-accent: #c6f24e;
+  --color-accent-deep: #9fc72e;
+  --color-moss: #1e3a2a;
+
+  /* ---- Type ------------------------------------------------------- */
+  --font-display: var(--font-instrument), Georgia, serif;
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+
+  /* Fluid editorial scale */
+  --text-eyebrow: 0.6875rem;
+  --text-display: clamp(3.25rem, 11.5vw, 12rem);
+  --text-h1: clamp(2.5rem, 6.5vw, 6rem);
+  --text-h2: clamp(2rem, 4.6vw, 4rem);
+  --text-h3: clamp(1.375rem, 2.1vw, 1.875rem);
+  --text-lead: clamp(1.0625rem, 1.5vw, 1.375rem);
+
+  /* ---- Motion ----------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+    --gutter: clamp(1.25rem, 5vw, 5rem);
+  }
+
+  * {
+    /* Lenis drives scrolling; native smooth scroll would fight it. */
+    scroll-behavior: auto;
+  }
+
+  html {
+    background-color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility gutter {
+  padding-inline: var(--gutter);
+}
+
+/* Full-bleed section shell used by every section. */
+@utility shell {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Hairline rules — the editorial glue between sections. */
+@utility rule {
+  border-top: 1px solid color-mix(in oklab, var(--color-paper) 14%, transparent);
+}
+
+/*
+ * SplitText output. Each line gets a clipping mask so characters can
+ * translate in from below without bleeding into the line above.
+ */
+.split-line {
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.split-char {
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------------ *
+ * Reduced motion: one global kill-switch.
+ * GSAP/Lenis are disabled in JS as well (see SmoothScroll + useMotionOK),
+ * this catches CSS transitions and any animation we missed.
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .split-char,
+  [data-reveal] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
