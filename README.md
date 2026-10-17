@@ -12,6 +12,12 @@ pnpm lint
 
 ---
 
+**Live:** https://ambo-marketing-orpin.vercel.app — hosted on Vercel; pushes to `main` deploy to production.
+
+### Environment variables
+
+None are read today. The contact form (`src/app/api/contact/route.ts`) validates and rate-limits submissions but does not deliver them yet; once the Resend transport described below is wired in it will need `RESEND_API_KEY` and `CONTACT_TO` (names only — set values in `.env.local` or Vercel, never in the repo).
+
 ## ⚠️ Before this goes live
 
 Four things in here are **placeholders**, not facts. They're all in
